@@ -843,7 +843,7 @@ section,
   position: relative;
   padding: 60px 0;
   display: flex;
-  align-items: center;
+  align-items: center;  
   background: url("../img/hero-bg.jpg") top left;
   background-size: cover;
 }
@@ -1951,6 +1951,4 @@ section,
 /*--------------------------------------------------------------
 # Starter Section Section
 --------------------------------------------------------------*/
-.starter-section {
-  /* Add your styles here */
-}
+

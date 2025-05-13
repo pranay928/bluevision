@@ -1,3 +1,29 @@
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "bluevision";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+
+?> 
+<?php 
+//for logo img
+$sqllogo ="SELECT * FROM logo ORDER BY id DESC";
+$resultlogo = $conn->query($sqllogo);
+
+   
+    $rowlogo = $resultlogo->fetch_assoc() ;
+    $logo = $rowlogo['logo'];
+    $folder = "assets/img/logo/" . $logo; 
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,69 +53,38 @@
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
 
-  <!-- =======================================================
-  * Template Name: BizLand
-  * Template URL: https://bootstrapmade.com/bizland-bootstrap-business-template/
-  * Updated: Aug 07 2024 with Bootstrap v5.3.3
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
 <body class="index-page">
   
 
-  <header id="header" class="header sticky-top">
-
-    <!-- <div class="topbar d-flex align-items-center">
-      <div class="container d-flex justify-content-center justify-content-md-between">
-        <div class="contact-info d-flex align-items-center">
-          <i class="bi bi-envelope d-flex align-items-center"><a href="mailto:contact@example.com">contact@example.com</a></i>
-          <i class="bi bi-phone d-flex align-items-center ms-4"><span>+1 5589 55488 55</span></i>
-        </div>
-        <div class="social-links d-none d-md-flex align-items-center">
-          <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
-          <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-          <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
-        </div>
-      </div>
-    </div>End Top Bar -->
+  <header id="header" class="header sticky-top">    
 
     <div class="branding d-flex align-items-cente">
 
       <div class="container position-relative d-flex align-items-center justify-content-between">
         <a href="index.html" class="logo d-flex align-items-center">
           <!-- Uncomment the line below if you also wish to use an image logo -->
-          <img src="assets/img/logo.png" alt="">
+          <img src="<?php echo $folder; ?>" alt="">
           <h1 class="sitename"></h1>
         </a>
 
         <nav id="navmenu" class="navmenu">
           <ul>
-            <li><a href="#hero" class="active">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#services">Services</a></li>            
-            <!-- <li><a href="#portfolio">Portfolio</a></li> -->
-            <li><a href="#team">Team</a></li>
-            <!-- <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-              <ul>
-                <li><a href="#">Dropdown 1</a></li>
-                <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                  <ul>
-                    <li><a href="#">Deep Dropdown 1</a></li>
-                    <li><a href="#">Deep Dropdown 2</a></li>
-                    <li><a href="#">Deep Dropdown 3</a></li>
-                    <li><a href="#">Deep Dropdown 4</a></li>
-                    <li><a href="#">Deep Dropdown 5</a></li>
-                  </ul>
-                </li>
-                <li><a href="#">Dropdown 2</a></li>
-                <li><a href="#">Dropdown 3</a></li>
-                <li><a href="#">Dropdown 4</a></li>
-              </ul>
-            </li> -->
-            <li><a href="#contact">Contact</a></li>
+             <li><a href="#hero" class="active">Home</a></li>
+              <?php 
+              $sql = "SELECT * FROM `navbar`";
+              $result = $conn->query($sql);
+              if ($result->num_rows > 0) {
+                  // output data of each row
+                  while($row = $result->fetch_assoc()) {
+                    ?> <li><a href="<?php echo $row['link'] ?>"><?php echo $row['title']?></a></li><?php
+                  }
+              } else {
+                  echo "0 results";
+              }
+              ?>        
+                      
           </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
@@ -104,12 +99,25 @@
 
     <!-- Hero Section -->
     <section id="hero" class="hero section light-background">
+      <!-- for database contant -->
+      <?php 
+      $sql = "SELECT * FROM `hero` ORDER BY id DESC LIMIT 1";
+      $result = $conn->query($sql);
+      if ($result->num_rows > 0) {
+          // output data of each row
+          $row = $result->fetch_assoc();
+          $heading = $row['heading'];
+          $subheading = $row['subheading'];
+      } else {
+          echo "0 results";
+      }
+            ?> 
 
       <div class="container">
         <div class="row gy-4">
           <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="zoom-out">
-            <h1>When<span> Vision</span> Ignites Innovation</h1>
-            <p>At BlueVision, we transform your boldest dreams into powerful digital realities — fueled by cutting-edge technology and unstoppable creativity.</p>
+            <h1><?php echo $heading ;?></h1>
+            <p><?php echo $subheading ;?></p>
             <div class="d-flex">
               <a href="#about" class="btn-get-started">Launch Your Dream</a>
               <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="glightbox btn-watch-video d-flex align-items-center"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
@@ -181,31 +189,43 @@
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
             <img src="assets/img/about.jpg" alt="" class="img-fluid">
           </div>
+          <!-- for php query -->
+          <?php
+          $sql = "SELECT * FROM `about` ORDER BY id DESC LIMIT 1";
+          $result =$conn->query($sql);
+          $row = $result->fetch_assoc();
+          $heading = $row['heading'];
+          $headingdes = $row['headingdes'];
+          $point1 = $row['point1'];
+          $pointdescription1 = $row['pointdescription1'];
+          $point2 = $row['point2'];
+          $pointdescription2 = $row['pointdescription2'];
+          $description = $row['description']; 
+          
+          ?>
 
           <div class="col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-up" data-aos-delay="200">
             <div class="about-content ps-0 ps-lg-3">
-              <h3>We are a team of visionary developers, driven by passion to make the web a more beautiful, powerful place.</h3>
-              <p class="fst-italic">At BlueVision, we believe technology should not just work — it should inspire.
-We craft stunning, high-performance websites that are intuitive, visually captivating, and built to elevate user experience.
-Our mission is simple: to turn bold ideas into seamless digital realities.</p> 
+              <h3><?php echo $heading; ?></h3>
+              <p class="fst-italic"><?php echo $headingdes; ?></p> 
               <ul>
                 <li>
                   <i class="bi bi-diagram-3"></i>
                   <div>
-                    <h4>Innovation at Our Core</h4>
-                    <p>We thrive on creativity and innovation, constantly pushing boundaries to deliver fresh, impactful solutions.</p>
+                    <h4><?php echo $point1; ?></h4>
+                    <p><?php echo $pointdescription1; ?></p>
                   </div>
                 </li>
                 <li>
                   <i class="bi bi-fullscreen-exit"></i>
                   <div>
-                    <h4>User-Centric Approach</h4>
-                    <p> Every pixel matters. We design experiences that feel natural, easy to navigate, and truly connect with users.</p>
+                    <h4><?php echo $point2; ?></h4>
+                    <p><?php echo $pointdescription2; ?></p>
                   </div>
                 </li>
               </ul>
               <p>
-                This qualitys have allowed us to work with some of the biggest names in the industry, and we are proud to have a portfolio that includes projects for companies such as Abc, Xyz, and Djy. We are always looking for new challenges and opportunities to grow, and we are excited to see what the future holds for us. 
+                <?php echo $description; ?> 
               </p>
             </div>
 
@@ -218,6 +238,19 @@ Our mission is simple: to turn bold ideas into seamless digital realities.</p>
 
     <!-- Skills Section -->
     <section id="skills" class="skills section">
+      <!-- for php query -->
+     <?php
+      $sql = "SELECT * FROM `skill` ORDER BY id DESC LIMIT 1";
+      $result =$conn->query($sql);
+      $row = $result->fetch_assoc();
+      $html = $row['html'];
+      $css = $row['css'];
+      $javascript = $row['javascript'];
+      $php = $row['php'];
+      $mysql = $row['mysqli'];
+      $wordpress = $row['wordpress']; 
+      
+      ?>
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
 
@@ -226,23 +259,23 @@ Our mission is simple: to turn bold ideas into seamless digital realities.</p>
           <div class="col-lg-6">
 
             <div class="progress">
-              <span class="skill"><span>HTML</span> <i class="val">100%</i></span>
+              <span class="skill"><span>HTML</span> <i class="val"><?php echo $html;?>%</i></span>
               <div class="progress-bar-wrap">
-                <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $html;?>" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
             </div><!-- End Skills Item -->
 
             <div class="progress">
-              <span class="skill"><span>CSS</span> <i class="val">90%</i></span>
+              <span class="skill"><span>CSS</span> <i class="val"><?php echo $css;?>%</i></span>
               <div class="progress-bar-wrap">
-                <div class="progress-bar" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $css;?>" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
             </div><!-- End Skills Item -->
 
             <div class="progress">
-              <span class="skill"><span>JavaScript</span> <i class="val">75%</i></span>
+              <span class="skill"><span>JavaScript</span> <i class="val"><?php echo $javascript;?>%</i></span>
               <div class="progress-bar-wrap">
-                <div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $javascript;?>" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
             </div><!-- End Skills Item -->
 
@@ -251,23 +284,23 @@ Our mission is simple: to turn bold ideas into seamless digital realities.</p>
           <div class="col-lg-6">
 
             <div class="progress">
-              <span class="skill"><span>PHP</span> <i class="val">80%</i></span>
+              <span class="skill"><span>PHP</span> <i class="val"><?php echo $php;?>%</i></span>
               <div class="progress-bar-wrap">
-                <div class="progress-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $php;?>" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
             </div><!-- End Skills Item -->
 
             <div class="progress">
-              <span class="skill"><span>My-Sql</span> <i class="val">85%</i></span>
+              <span class="skill"><span>My-Sql</span> <i class="val"><?php echo $mysql;?>%</i></span>
               <div class="progress-bar-wrap">
-                <div class="progress-bar" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $mysql;?>" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
             </div><!-- End Skills Item -->
 
             <div class="progress">
-              <span class="skill"><span>WordPress/CMS</span> <i class="val">90%</i></span>
+              <span class="skill"><span>WordPress/CMS</span> <i class="val"><?php echo $wordpress;?>%</i></span>
               <div class="progress-bar-wrap">
-                <div class="progress-bar" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $wordpress;?>" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
             </div><!-- End Skills Item -->
 
